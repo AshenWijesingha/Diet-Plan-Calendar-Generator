@@ -337,6 +337,39 @@
             transition: width 0.3s ease;
         }
 
+        .validation-results {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .validation-item {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .validation-item.success {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .validation-item.error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .validation-item.warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
         @media print {
             .no-print {
                 display: none;
@@ -521,6 +554,7 @@
                 <!-- Action Buttons -->
                 <div class="flex flex-wrap gap-4 justify-center no-print">
                     <button type="submit" class="btn-primary text-lg">📅 Generate Calendar (.ics)</button>
+                    <button type="button" id="validateICS" class="btn-secondary text-lg" disabled>✅ Validate ICS File</button>
                     <button type="button" id="exportPDF" class="btn-success text-lg">📄 Export PDF</button>
                     <button type="button" id="savePlan" class="btn-secondary text-lg">💾 Save Plan</button>
                     <button type="button" id="resetForm" class="btn-danger text-lg">🔄 Reset</button>
@@ -554,6 +588,9 @@
 
         <!-- Success Message -->
         <div id="success-message" class="hidden no-print"></div>
+        
+        <!-- ICS Validation Results -->
+        <div id="validation-results" class="hidden no-print"></div>
     </div>
 
     <!-- Modal for Import/Export -->
@@ -1150,6 +1187,195 @@
             }, 3000);
         }
 
+        // ICS Validation
+        let lastGeneratedICS = null;
+
+        function validateICSFile(icsContent) {
+            const validationResults = {
+                isValid: true,
+                errors: [],
+                warnings: [],
+                successes: []
+            };
+
+            // Check 1: Basic structure
+            if (!icsContent || icsContent.trim().length === 0) {
+                validationResults.isValid = false;
+                validationResults.errors.push('ICS content is empty');
+                return validationResults;
+            }
+
+            // Check 2: Required headers
+            if (!icsContent.includes('BEGIN:VCALENDAR')) {
+                validationResults.isValid = false;
+                validationResults.errors.push('Missing required VCALENDAR header');
+            } else {
+                validationResults.successes.push('VCALENDAR header present');
+            }
+
+            if (!icsContent.includes('END:VCALENDAR')) {
+                validationResults.isValid = false;
+                validationResults.errors.push('Missing required VCALENDAR closing tag');
+            } else {
+                validationResults.successes.push('VCALENDAR properly closed');
+            }
+
+            // Check 3: Version
+            if (!icsContent.includes('VERSION:2.0')) {
+                validationResults.warnings.push('ICS version not specified or not 2.0');
+            } else {
+                validationResults.successes.push('Valid ICS version 2.0');
+            }
+
+            // Check 4: Events
+            const eventMatches = icsContent.match(/BEGIN:VEVENT/g);
+            const eventCount = eventMatches ? eventMatches.length : 0;
+            
+            if (eventCount === 0) {
+                validationResults.isValid = false;
+                validationResults.errors.push('No events found in calendar');
+            } else {
+                validationResults.successes.push(`Found ${eventCount} event(s) in calendar`);
+            }
+
+            // Check 5: Event structure
+            const endEventMatches = icsContent.match(/END:VEVENT/g);
+            const endEventCount = endEventMatches ? endEventMatches.length : 0;
+            
+            if (eventCount !== endEventCount) {
+                validationResults.isValid = false;
+                validationResults.errors.push(`Mismatched VEVENT tags: ${eventCount} BEGIN but ${endEventCount} END`);
+            } else {
+                validationResults.successes.push('All events properly closed');
+            }
+
+            // Check 6: Required event fields
+            const requiredFields = ['DTSTART', 'SUMMARY', 'UID'];
+            const events = icsContent.split('BEGIN:VEVENT').slice(1);
+            
+            events.forEach((event, index) => {
+                requiredFields.forEach(field => {
+                    if (!event.includes(field)) {
+                        validationResults.warnings.push(`Event ${index + 1} missing recommended field: ${field}`);
+                    }
+                });
+            });
+
+            // Check 7: Date format validation
+            const datePattern = /DTSTART.*?:(\d{8}T\d{6})/g;
+            const dates = [...icsContent.matchAll(datePattern)];
+            let validDates = 0;
+            
+            dates.forEach(match => {
+                const dateStr = match[1];
+                // Basic format check: YYYYMMDDTHHMMSS
+                if (/^\d{8}T\d{6}$/.test(dateStr)) {
+                    validDates++;
+                }
+            });
+            
+            if (dates.length > 0) {
+                if (validDates === dates.length) {
+                    validationResults.successes.push(`All ${validDates} date(s) have valid format`);
+                } else {
+                    validationResults.warnings.push(`${dates.length - validDates} date(s) may have invalid format`);
+                }
+            }
+
+            // Check 8: PRODID (recommended)
+            if (!icsContent.includes('PRODID:')) {
+                validationResults.warnings.push('Missing PRODID (recommended for calendar identification)');
+            } else {
+                validationResults.successes.push('PRODID present');
+            }
+
+            // Check 9: Character encoding
+            if (icsContent.includes('\\n') || icsContent.includes('\\r')) {
+                validationResults.warnings.push('Found escaped line breaks, verify proper encoding');
+            }
+
+            // Check 10: Alarm structure
+            const alarmMatches = icsContent.match(/BEGIN:VALARM/g);
+            const alarmCount = alarmMatches ? alarmMatches.length : 0;
+            const alarmEndMatches = icsContent.match(/END:VALARM/g);
+            const alarmEndCount = alarmEndMatches ? alarmEndMatches.length : 0;
+            
+            if (alarmCount !== alarmEndCount) {
+                validationResults.errors.push(`Mismatched VALARM tags: ${alarmCount} BEGIN but ${alarmEndCount} END`);
+                validationResults.isValid = false;
+            } else if (alarmCount > 0) {
+                validationResults.successes.push(`${alarmCount} alarm(s) properly configured`);
+            }
+
+            return validationResults;
+        }
+
+        function displayValidationResults(results) {
+            const container = document.getElementById('validation-results');
+            container.classList.remove('hidden');
+            
+            let html = '<div class="validation-results">';
+            html += '<h2 class="text-2xl font-bold text-gray-800 mb-4">📋 ICS File Validation Results</h2>';
+            
+            // Overall status
+            if (results.isValid) {
+                html += '<div class="validation-item success text-lg font-semibold mb-4">';
+                html += '✅ ICS file is valid and ready to use!';
+                html += '</div>';
+            } else {
+                html += '<div class="validation-item error text-lg font-semibold mb-4">';
+                html += '❌ ICS file has errors that need to be fixed';
+                html += '</div>';
+            }
+            
+            // Errors
+            if (results.errors.length > 0) {
+                html += '<h3 class="text-xl font-bold text-red-600 mb-2 mt-4">Errors:</h3>';
+                results.errors.forEach(error => {
+                    html += `<div class="validation-item error">❌ ${error}</div>`;
+                });
+            }
+            
+            // Warnings
+            if (results.warnings.length > 0) {
+                html += '<h3 class="text-xl font-bold text-yellow-600 mb-2 mt-4">Warnings:</h3>';
+                results.warnings.forEach(warning => {
+                    html += `<div class="validation-item warning">⚠️ ${warning}</div>`;
+                });
+            }
+            
+            // Successes
+            if (results.successes.length > 0) {
+                html += '<h3 class="text-xl font-bold text-green-600 mb-2 mt-4">Passed Checks:</h3>';
+                results.successes.forEach(success => {
+                    html += `<div class="validation-item success">✅ ${success}</div>`;
+                });
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+            
+            // Scroll to results
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function performICSValidation() {
+            if (!lastGeneratedICS) {
+                showToast('Please generate an ICS file first', 'error');
+                return;
+            }
+            
+            showToast('Validating ICS file...', 'success');
+            const results = validateICSFile(lastGeneratedICS);
+            displayValidationResults(results);
+            
+            if (results.isValid) {
+                showToast('Validation passed!', 'success');
+            } else {
+                showToast('Validation found errors', 'error');
+            }
+        }
+
         // Modal
         function closeModal(id) {
             document.getElementById(id).style.display = 'none';
@@ -1180,6 +1406,12 @@
                 return;
             }
 
+            // Store the generated ICS content for validation
+            lastGeneratedICS = value;
+            
+            // Enable the validate button
+            document.getElementById('validateICS').disabled = false;
+
             const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1190,13 +1422,15 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 
-            showToast('Calendar file generated successfully!', 'success');
+            showToast('Calendar file generated successfully! You can now validate it.', 'success');
         });
 
         document.getElementById('add-meal').addEventListener('click', () => {
             createMealInput();
             showToast('New meal added', 'success');
         });
+
+        document.getElementById('validateICS').addEventListener('click', performICSValidation);
 
         document.getElementById('savePlan').addEventListener('click', savePlan);
         document.getElementById('exportPDF').addEventListener('click', exportPDF);
