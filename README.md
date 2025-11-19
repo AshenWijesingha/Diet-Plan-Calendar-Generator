@@ -48,7 +48,7 @@ The validator performs 10 comprehensive checks:
 
 ## Usage
 
-1. Open `diet_calendar_app.html` in a web browser
+1. Open `index.html` in a web browser
 2. Fill in patient/client information
 3. Add meals with times and descriptions
 4. Configure reminders (water, supplements, workout, etc.)

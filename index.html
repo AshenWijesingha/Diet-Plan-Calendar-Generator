@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Professional diet plan calendar generator with meal planning, calendar sync, PDF export, and mobile support">
+    <meta name="theme-color" content="#667eea">
     <title>Diet Plan Calendar Generator Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/ics@3.7.6/dist/bundle.min.js"></script>
@@ -337,6 +339,408 @@
             transition: width 0.3s ease;
         }
 
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        body.dark-mode .step {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+        }
+
+        body.dark-mode .card {
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .plan-preview {
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode input[type="text"],
+        body.dark-mode input[type="date"],
+        body.dark-mode input[type="time"],
+        body.dark-mode input[type="number"],
+        body.dark-mode input[type="email"],
+        body.dark-mode textarea,
+        body.dark-mode select {
+            background: #1a202c;
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+
+        body.dark-mode .text-gray-800 {
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-mode .text-gray-700 {
+            color: #cbd5e0 !important;
+        }
+
+        body.dark-mode .text-gray-600 {
+            color: #a0aec0 !important;
+        }
+
+        body.dark-mode .stats-card {
+            background: #2d3748;
+        }
+
+        body.dark-mode .tab {
+            color: #a0aec0;
+        }
+
+        body.dark-mode .tab.active {
+            color: #667eea;
+        }
+
+        body.dark-mode .modal-content {
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        body.dark-mode .loading-content {
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1001;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Progress Indicator */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            padding: 1rem 0.5rem;
+        }
+
+        .progress-step::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #e5e7eb;
+            z-index: 0;
+        }
+
+        .progress-step:first-child::before {
+            left: 50%;
+        }
+
+        .progress-step:last-child::before {
+            right: 50%;
+        }
+
+        .progress-step.completed::before {
+            background: #667eea;
+        }
+
+        .progress-step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            margin: 0 auto 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .progress-step-circle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .progress-step.completed .progress-step-circle {
+            background: #10b981;
+            color: white;
+        }
+
+        .progress-step-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .progress-step.active .progress-step-label {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Search Box */
+        .search-box {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-box input {
+            padding-left: 2.5rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        /* Confirmation Dialog */
+        .confirm-dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 3001;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        body.dark-mode .confirm-dialog {
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+
+        /* Mobile Responsive Improvements */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 2rem 1rem;
+            }
+
+            .hero h1 {
+                font-size: 1.75rem !important;
+            }
+
+            .hero p {
+                font-size: 0.95rem;
+            }
+
+            .step {
+                padding: 1.5rem;
+            }
+
+            .step h2 {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .btn-primary, .btn-secondary, .btn-success, .btn-danger {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.9rem;
+            }
+
+            .dark-mode-toggle {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+
+            .tab {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.85rem;
+            }
+
+            .modal-content {
+                margin: 10% 5%;
+                padding: 1.5rem;
+                max-width: 95%;
+            }
+
+            .toast {
+                right: 1rem;
+                bottom: 1rem;
+                left: 1rem;
+                width: auto;
+            }
+
+            .progress-step-label {
+                font-size: 0.65rem;
+            }
+
+            .progress-step-circle {
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+
+            input[type="text"],
+            input[type="date"],
+            input[type="time"],
+            input[type="number"],
+            input[type="email"],
+            textarea,
+            select {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
+
+        @media (max-width: 640px) {
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.2rem 0.5rem;
+            }
+
+            .stats-card {
+                padding: 1rem;
+            }
+        }
+
+        /* Focus Indicators */
+        *:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        button:focus, a:focus {
+            outline: 2px solid #667eea;
+        }
+
+        /* Skip to Main Content */
+        .skip-to-main {
+            position: absolute;
+            left: -9999px;
+            z-index: 999;
+            padding: 1rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        .skip-to-main:focus {
+            left: 1rem;
+            top: 1rem;
+        }
+
+        /* Validation Feedback */
+        .input-error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .input-success {
+            border-color: #10b981 !important;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* ICS Validation Styles */
         .validation-results {
             background: white;
             border-radius: 16px;
@@ -344,6 +748,11 @@
             margin-top: 2rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             animation: fadeInUp 0.5s ease-out;
+        }
+
+        body.dark-mode .validation-results {
+            background: #2d3748;
+            color: #e2e8f0;
         }
 
         .validation-item {
@@ -370,66 +779,154 @@
             color: #d97706;
         }
 
+        body.dark-mode .validation-item.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        body.dark-mode .validation-item.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        body.dark-mode .validation-item.warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fcd34d;
+        }
+
+        /* Better Print Styles */
         @media print {
             .no-print {
-                display: none;
+                display: none !important;
             }
+
+            body {
+                background: white !important;
+            }
+
+            .step, .card, .plan-preview {
+                box-shadow: none !important;
+                break-inside: avoid;
+            }
+
+            .hero {
+                background: #667eea !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        /* Accessibility Improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen py-8 px-4">
-    <div class="max-w-6xl mx-auto">
+    <!-- Skip to Main Content -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle no-print" onclick="toggleDarkMode()" aria-label="Toggle dark mode">
+        <span id="dark-mode-icon">🌙</span>
+    </button>
+
+    <div class="max-w-6xl mx-auto" id="main-content" role="main">
         <!-- Hero Section -->
-        <div class="hero animate-fadeInUp">
+        <div class="hero animate-fadeInUp" role="banner">
             <div style="position: relative; z-index: 1;">
                 <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">🍽️ Diet Plan Calendar Generator Pro</h1>
                 <p class="text-purple-100 text-lg mb-6">Professional meal planning with calendar sync, templates, PDF export & more</p>
                 <div class="flex justify-center gap-4 flex-wrap">
-                    <span class="badge badge-purple">📅 Calendar Sync</span>
-                    <span class="badge badge-green">📄 PDF Export</span>
-                    <span class="badge badge-blue">💾 Save & Load</span>
+                    <span class="badge badge-purple" role="status">📅 Calendar Sync</span>
+                    <span class="badge badge-green" role="status">📄 PDF Export</span>
+                    <span class="badge badge-blue" role="status">💾 Save & Load</span>
+                    <span class="badge badge-purple" role="status">🌙 Dark Mode</span>
                 </div>
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="bg-white rounded-xl shadow-lg mb-6 p-2 flex flex-wrap gap-2 no-print">
-            <div class="tab active" data-tab="create">🆕 Create Plan</div>
-            <div class="tab" data-tab="templates">📋 Templates</div>
-            <div class="tab" data-tab="saved">💾 Saved Plans</div>
-            <div class="tab" data-tab="preview">👁️ Preview</div>
+        <!-- Progress Indicator -->
+        <div class="progress-steps no-print" role="navigation" aria-label="Form progress">
+            <div class="progress-step active" data-step="1">
+                <div class="progress-step-circle">1</div>
+                <div class="progress-step-label">Info</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="progress-step-circle">2</div>
+                <div class="progress-step-label">Goals</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="progress-step-circle">3</div>
+                <div class="progress-step-label">Meals</div>
+            </div>
+            <div class="progress-step" data-step="4">
+                <div class="progress-step-circle">4</div>
+                <div class="progress-step-label">Reminders</div>
+            </div>
         </div>
 
+        <!-- Navigation Tabs -->
+        <nav class="bg-white rounded-xl shadow-lg mb-6 p-2 flex flex-wrap gap-2 no-print" role="tablist" aria-label="Main navigation">
+            <div class="tab active" data-tab="create" role="tab" aria-selected="true" aria-controls="tab-create" tabindex="0">🆕 Create Plan</div>
+            <div class="tab" data-tab="templates" role="tab" aria-selected="false" aria-controls="tab-templates" tabindex="-1">📋 Templates</div>
+            <div class="tab" data-tab="saved" role="tab" aria-selected="false" aria-controls="tab-saved" tabindex="-1">💾 Saved Plans</div>
+            <div class="tab" data-tab="preview" role="tab" aria-selected="false" aria-controls="tab-preview" tabindex="-1">👁️ Preview</div>
+        </nav>
+
         <!-- Tab Content: Create Plan -->
-        <div id="tab-create" class="tab-content">
-            <form id="dietForm" class="animate-fadeInUp" style="animation-delay: 0.2s">
+        <div id="tab-create" class="tab-content" role="tabpanel" aria-labelledby="create-tab">
+            <form id="dietForm" class="animate-fadeInUp" style="animation-delay: 0.2s" novalidate>
                 <!-- Step 1: General Information -->
-                <div class="step">
+                <div class="step" data-step-num="1">
                     <h2 class="text-2xl font-bold text-white mb-6">📋 General Information</h2>
                     <div class="grid md:grid-cols-3 gap-4">
                         <div class="card">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Patient/Client Name *</label>
-                            <input type="text" id="patientName" placeholder="Enter name" required class="text-gray-800">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="patientName">
+                                Patient/Client Name *
+                                <span class="tooltip">
+                                    <span style="cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext">Enter the name of the person this diet plan is for</span>
+                                </span>
+                            </label>
+                            <input type="text" id="patientName" placeholder="Enter name" required class="text-gray-800" aria-required="true">
+                            <div class="error-message" id="patientName-error"></div>
                         </div>
                         <div class="card">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Email (Optional)</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="patientEmail">Email (Optional)</label>
                             <input type="email" id="patientEmail" placeholder="client@email.com" class="text-gray-800">
+                            <div class="error-message" id="patientEmail-error"></div>
                         </div>
                         <div class="card">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Phone (Optional)</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="patientPhone">Phone (Optional)</label>
                             <input type="text" id="patientPhone" placeholder="+1234567890" class="text-gray-800">
                         </div>
                         <div class="card">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Start Date *</label>
-                            <input type="date" id="startDate" required class="text-gray-800">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="startDate">Start Date *</label>
+                            <input type="date" id="startDate" required class="text-gray-800" aria-required="true">
+                            <div class="error-message" id="startDate-error"></div>
                         </div>
                         <div class="card">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Duration (Days)</label>
-                            <input type="number" id="duration" min="1" max="365" value="28" class="text-gray-800">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="duration">Duration (Days)</label>
+                            <input type="number" id="duration" min="1" max="365" value="28" class="text-gray-800" aria-describedby="duration-help">
+                            <small id="duration-help" class="text-gray-500">1-365 days</small>
                         </div>
                         <div class="card">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Goal</label>
-                            <select id="goal" class="text-gray-800">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="goal">Goal</label>
+                            <select id="goal" class="text-gray-800" aria-label="Select your goal">
                                 <option value="weight-loss">Weight Loss</option>
                                 <option value="muscle-gain">Muscle Gain</option>
                                 <option value="maintenance">Maintenance</option>
@@ -438,57 +935,57 @@
                             </select>
                         </div>
                         <div class="card md:col-span-3">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Notes / Special Instructions</label>
-                            <textarea id="planNotes" rows="2" placeholder="Allergies, preferences, restrictions..." class="text-gray-800"></textarea>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="planNotes">Notes / Special Instructions</label>
+                            <textarea id="planNotes" rows="2" placeholder="Allergies, preferences, restrictions..." class="text-gray-800" aria-label="Plan notes"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <!-- Step 2: Nutritional Goals -->
-                <div class="step">
+                <div class="step" data-step-num="2">
                     <h2 class="text-2xl font-bold text-white mb-6">🎯 Nutritional Goals (Optional)</h2>
                     <div class="grid md:grid-cols-4 gap-4">
                         <div class="card">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Daily Calories</label>
-                            <input type="number" id="targetCalories" placeholder="2000" class="text-gray-800">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="targetCalories">Daily Calories</label>
+                            <input type="number" id="targetCalories" placeholder="2000" class="text-gray-800" aria-label="Target daily calories">
                         </div>
                         <div class="card">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Protein (g)</label>
-                            <input type="number" id="targetProtein" placeholder="150" class="text-gray-800">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="targetProtein">Protein (g)</label>
+                            <input type="number" id="targetProtein" placeholder="150" class="text-gray-800" aria-label="Target protein in grams">
                         </div>
                         <div class="card">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Carbs (g)</label>
-                            <input type="number" id="targetCarbs" placeholder="200" class="text-gray-800">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="targetCarbs">Carbs (g)</label>
+                            <input type="number" id="targetCarbs" placeholder="200" class="text-gray-800" aria-label="Target carbs in grams">
                         </div>
                         <div class="card">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Fats (g)</label>
-                            <input type="number" id="targetFats" placeholder="70" class="text-gray-800">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="targetFats">Fats (g)</label>
+                            <input type="number" id="targetFats" placeholder="70" class="text-gray-800" aria-label="Target fats in grams">
                         </div>
                     </div>
                 </div>
 
                 <!-- Step 3: Daily Meals -->
-                <div class="step">
-                    <div class="flex justify-between items-center mb-6">
+                <div class="step" data-step-num="3">
+                    <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
                         <h2 class="text-2xl font-bold text-white">🍴 Daily Meal Schedule</h2>
-                        <button type="button" id="add-meal" class="btn-secondary">+ Add Meal</button>
+                        <button type="button" id="add-meal" class="btn-secondary" aria-label="Add a new meal">+ Add Meal</button>
                     </div>
-                    <div id="meals-container" class="space-y-4"></div>
+                    <div id="meals-container" class="space-y-4" role="list" aria-label="Meal list"></div>
                 </div>
 
                 <!-- Step 4: Additional Reminders -->
-                <div class="step">
+                <div class="step" data-step-num="4">
                     <h2 class="text-2xl font-bold text-white mb-6">⏰ Additional Reminders</h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="card">
                             <div class="flex items-center gap-4 mb-3">
-                                <input type="checkbox" id="water" class="checkbox-custom">
+                                <input type="checkbox" id="water" class="checkbox-custom" aria-describedby="water-desc">
                                 <label for="water" class="flex-1 text-gray-700 font-medium">💧 Water Reminder</label>
                             </div>
                             <div class="ml-9 grid grid-cols-2 gap-2">
-                                <input type="time" id="waterStart" value="08:00" class="text-gray-800" placeholder="Start">
-                                <input type="time" id="waterEnd" value="20:00" class="text-gray-800" placeholder="End">
-                                <select id="waterInterval" class="text-gray-800 col-span-2">
+                                <input type="time" id="waterStart" value="08:00" class="text-gray-800" placeholder="Start" aria-label="Water reminder start time">
+                                <input type="time" id="waterEnd" value="20:00" class="text-gray-800" placeholder="End" aria-label="Water reminder end time">
+                                <select id="waterInterval" class="text-gray-800 col-span-2" aria-label="Water reminder interval">
                                     <option value="1">Every 1 hour</option>
                                     <option value="2" selected>Every 2 hours</option>
                                     <option value="3">Every 3 hours</option>
@@ -497,32 +994,32 @@
                         </div>
                         <div class="card">
                             <div class="flex items-center gap-4 mb-3">
-                                <input type="checkbox" id="supplement" class="checkbox-custom">
+                                <input type="checkbox" id="supplement" class="checkbox-custom" aria-describedby="supplement-desc">
                                 <label for="supplement" class="flex-1 text-gray-700 font-medium">💊 Supplements</label>
                             </div>
                             <div class="ml-9">
-                                <input type="time" id="supplementTime" value="09:00" class="text-gray-800 mb-2">
-                                <input type="text" id="supplementName" placeholder="Supplement name" class="text-gray-800">
+                                <input type="time" id="supplementTime" value="09:00" class="text-gray-800 mb-2" aria-label="Supplement time">
+                                <input type="text" id="supplementName" placeholder="Supplement name" class="text-gray-800" aria-label="Supplement name">
                             </div>
                         </div>
                         <div class="card">
                             <div class="flex items-center gap-4 mb-3">
-                                <input type="checkbox" id="workout" class="checkbox-custom">
+                                <input type="checkbox" id="workout" class="checkbox-custom" aria-describedby="workout-desc">
                                 <label for="workout" class="flex-1 text-gray-700 font-medium">🏋️ Workout</label>
                             </div>
                             <div class="ml-9">
-                                <input type="time" id="workoutTime" value="06:00" class="text-gray-800 mb-2">
-                                <input type="text" id="workoutType" placeholder="Workout type" class="text-gray-800 mb-2">
-                                <input type="number" id="workoutDuration" value="60" placeholder="Duration (min)" class="text-gray-800">
+                                <input type="time" id="workoutTime" value="06:00" class="text-gray-800 mb-2" aria-label="Workout time">
+                                <input type="text" id="workoutType" placeholder="Workout type" class="text-gray-800 mb-2" aria-label="Workout type">
+                                <input type="number" id="workoutDuration" value="60" placeholder="Duration (min)" class="text-gray-800" aria-label="Workout duration in minutes">
                             </div>
                         </div>
                         <div class="card">
                             <div class="flex items-center gap-4 mb-3">
-                                <input type="checkbox" id="weighin" class="checkbox-custom">
+                                <input type="checkbox" id="weighin" class="checkbox-custom" aria-describedby="weighin-desc">
                                 <label for="weighin" class="flex-1 text-gray-700 font-medium">⚖️ Weekly Weigh-In</label>
                             </div>
                             <div class="ml-9">
-                                <select id="weighinDay" class="text-gray-800 mb-2">
+                                <select id="weighinDay" class="text-gray-800 mb-2" aria-label="Weigh-in day">
                                     <option value="0" selected>Sunday</option>
                                     <option value="1">Monday</option>
                                     <option value="2">Tuesday</option>
@@ -531,55 +1028,64 @@
                                     <option value="5">Friday</option>
                                     <option value="6">Saturday</option>
                                 </select>
-                                <input type="time" id="weighinTime" value="08:00" class="text-gray-800">
+                                <input type="time" id="weighinTime" value="08:00" class="text-gray-800" aria-label="Weigh-in time">
                             </div>
                         </div>
                         <div class="card">
                             <div class="flex items-center gap-4 mb-3">
-                                <input type="checkbox" id="sleep" class="checkbox-custom">
+                                <input type="checkbox" id="sleep" class="checkbox-custom" aria-describedby="sleep-desc">
                                 <label for="sleep" class="flex-1 text-gray-700 font-medium">😴 Sleep Reminder</label>
                             </div>
-                            <input type="time" id="sleepTime" value="22:00" class="ml-9 text-gray-800">
+                            <input type="time" id="sleepTime" value="22:00" class="ml-9 text-gray-800" aria-label="Sleep reminder time">
                         </div>
                         <div class="card">
                             <div class="flex items-center gap-4 mb-3">
-                                <input type="checkbox" id="meditation" class="checkbox-custom">
+                                <input type="checkbox" id="meditation" class="checkbox-custom" aria-describedby="meditation-desc">
                                 <label for="meditation" class="flex-1 text-gray-700 font-medium">🧘 Meditation</label>
                             </div>
-                            <input type="time" id="meditationTime" value="07:00" class="ml-9 text-gray-800">
+                            <input type="time" id="meditationTime" value="07:00" class="ml-9 text-gray-800" aria-label="Meditation time">
                         </div>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="flex flex-wrap gap-4 justify-center no-print">
-                    <button type="submit" class="btn-primary text-lg">📅 Generate Calendar (.ics)</button>
-                    <button type="button" id="validateICS" class="btn-secondary text-lg" disabled>✅ Validate ICS File</button>
-                    <button type="button" id="exportPDF" class="btn-success text-lg">📄 Export PDF</button>
-                    <button type="button" id="savePlan" class="btn-secondary text-lg">💾 Save Plan</button>
-                    <button type="button" id="resetForm" class="btn-danger text-lg">🔄 Reset</button>
+                    <button type="submit" class="btn-primary text-lg" aria-label="Generate calendar file">📅 Generate Calendar (.ics)</button>
+                    <button type="button" id="validateICS" class="btn-secondary text-lg" disabled aria-label="Validate ICS file">✅ Validate ICS File</button>
+                    <button type="button" id="exportPDF" class="btn-success text-lg" aria-label="Export plan as PDF">📄 Export PDF</button>
+                    <button type="button" id="exportJSON" class="btn-secondary text-lg" aria-label="Export plan as JSON">📥 Export JSON</button>
+                    <button type="button" id="savePlan" class="btn-secondary text-lg" aria-label="Save plan locally">💾 Save Plan</button>
+                    <button type="button" id="resetForm" class="btn-danger text-lg" aria-label="Reset form">🔄 Reset</button>
                 </div>
             </form>
         </div>
 
         <!-- Tab Content: Templates -->
-        <div id="tab-templates" class="tab-content hidden">
+        <div id="tab-templates" class="tab-content hidden" role="tabpanel" aria-labelledby="templates-tab">
             <div class="step">
                 <h2 class="text-2xl font-bold text-white mb-6">📋 Pre-made Templates</h2>
-                <div class="grid md:grid-cols-3 gap-4" id="templates-container"></div>
+                <div class="grid md:grid-cols-3 gap-4" id="templates-container" role="list" aria-label="Template list"></div>
             </div>
         </div>
 
         <!-- Tab Content: Saved Plans -->
-        <div id="tab-saved" class="tab-content hidden">
+        <div id="tab-saved" class="tab-content hidden" role="tabpanel" aria-labelledby="saved-tab">
             <div class="step">
-                <h2 class="text-2xl font-bold text-white mb-6">💾 Your Saved Plans</h2>
-                <div id="saved-plans-container"></div>
+                <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+                    <h2 class="text-2xl font-bold text-white">💾 Your Saved Plans</h2>
+                    <button type="button" id="importJSON" class="btn-secondary" aria-label="Import plan from JSON">📥 Import JSON</button>
+                </div>
+                <!-- Search Box -->
+                <div class="search-box no-print mb-4">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchPlans" placeholder="Search saved plans..." class="text-gray-800" aria-label="Search saved plans">
+                </div>
+                <div id="saved-plans-container" role="list" aria-label="Saved plans list"></div>
             </div>
         </div>
 
         <!-- Tab Content: Preview -->
-        <div id="tab-preview" class="tab-content hidden">
+        <div id="tab-preview" class="tab-content hidden" role="tabpanel" aria-labelledby="preview-tab">
             <div class="plan-preview" id="preview-content">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6">📊 Plan Preview</h2>
                 <p class="text-gray-600">Fill out the form to see a preview of your diet plan.</p>
@@ -594,14 +1100,25 @@
     </div>
 
     <!-- Modal for Import/Export -->
-    <div id="importModal" class="modal">
+    <div id="importModal" class="modal" role="dialog" aria-labelledby="import-modal-title" aria-modal="true">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-2xl font-bold text-gray-800">Import Plan from JSON</h3>
-                <button class="text-gray-500 hover:text-gray-700 text-2xl" onclick="closeModal('importModal')">&times;</button>
+                <h3 id="import-modal-title" class="text-2xl font-bold text-gray-800">Import Plan from JSON</h3>
+                <button class="text-gray-500 hover:text-gray-700 text-2xl" onclick="closeModal('importModal')" aria-label="Close modal">&times;</button>
             </div>
-            <textarea id="importJSON" rows="10" class="text-gray-800 mb-4" placeholder="Paste JSON here..."></textarea>
-            <button onclick="importPlan()" class="btn-primary w-full">Import</button>
+            <textarea id="importJSONText" rows="10" class="text-gray-800 mb-4" placeholder="Paste JSON here..." aria-label="JSON import text"></textarea>
+            <div class="flex gap-2">
+                <button onclick="importPlan()" class="btn-primary flex-1">Import</button>
+                <button onclick="closeModal('importModal')" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;" role="alert" aria-live="assertive">
+        <div class="loading-content">
+            <div class="spinner" aria-label="Loading"></div>
+            <p class="mt-4 text-gray-800" id="loadingMessage">Processing...</p>
         </div>
     </div>
 
@@ -670,27 +1187,46 @@
             loadSavedPlans();
             setupTabs();
             setupAutoPreview();
+            loadDarkMode();
+            setupFormValidation();
+            setupProgressTracking();
+            setupKeyboardNavigation();
         });
 
         // Tab System
         function setupTabs() {
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    
-                    const tabName = tab.dataset.tab;
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.add('hidden');
-                    });
-                    document.getElementById(`tab-${tabName}`).classList.remove('hidden');
-                    
-                    if (tabName === 'preview') {
-                        updatePreview();
+                tab.addEventListener('click', () => switchTab(tab));
+                tab.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        switchTab(tab);
                     }
                 });
             });
+        }
+
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+                t.setAttribute('tabindex', '-1');
+            });
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+            tab.setAttribute('tabindex', '0');
+            
+            const tabName = tab.dataset.tab;
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            
+            if (tabName === 'preview') {
+                updatePreview();
+            }
         }
 
         // Meal Management
@@ -728,8 +1264,11 @@
         }
 
         function removeMeal(btn) {
-            btn.closest('.meal-row').remove();
-            showToast('Meal removed', 'success');
+            if (confirm('Remove this meal?')) {
+                btn.closest('.meal-row').remove();
+                showToast('Meal removed', 'success');
+                updateProgressSteps();
+            }
         }
 
         function initializeMeals() {
@@ -810,31 +1349,61 @@
         function loadSavedPlans() {
             const savedPlans = JSON.parse(localStorage.getItem('dietPlans') || '[]');
             const container = document.getElementById('saved-plans-container');
+            const searchInput = document.getElementById('searchPlans');
             
-            if (savedPlans.length === 0) {
-                container.innerHTML = '<div class="card text-center text-gray-600">No saved plans yet</div>';
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    filterSavedPlans(e.target.value);
+                });
+            }
+            
+            renderSavedPlans(savedPlans);
+        }
+
+        function filterSavedPlans(searchTerm) {
+            const savedPlans = JSON.parse(localStorage.getItem('dietPlans') || '[]');
+            const filtered = savedPlans.filter(plan => 
+                plan.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                plan.data.patientName.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            renderSavedPlans(filtered);
+        }
+
+        function renderSavedPlans(plans) {
+            const container = document.getElementById('saved-plans-container');
+            
+            if (plans.length === 0) {
+                container.innerHTML = '<div class="card text-center text-gray-600">No saved plans found</div>';
                 return;
             }
 
             container.innerHTML = '';
-            savedPlans.forEach((plan, index) => {
+            plans.forEach((plan, index) => {
                 const div = document.createElement('div');
                 div.className = 'card';
+                div.setAttribute('role', 'listitem');
                 div.innerHTML = `
-                    <div class="flex justify-between items-start">
+                    <div class="flex justify-between items-start flex-wrap gap-4">
                         <div class="flex-1">
-                            <h3 class="text-xl font-bold text-gray-800">${plan.name}</h3>
+                            <h3 class="text-xl font-bold text-gray-800">${escapeHtml(plan.name)}</h3>
                             <p class="text-gray-600 text-sm">Saved: ${new Date(plan.date).toLocaleDateString()}</p>
-                            <p class="text-gray-600 text-sm">Client: ${plan.data.patientName}</p>
+                            <p class="text-gray-600 text-sm">Client: ${escapeHtml(plan.data.patientName)}</p>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 flex-wrap">
                             <button onclick="loadSavedPlan(${index})" class="btn-secondary">Load</button>
+                            <button onclick="exportPlanAsJSON(${index})" class="btn-success">Export</button>
                             <button onclick="deleteSavedPlan(${index})" class="btn-danger">Delete</button>
                         </div>
                     </div>
                 `;
                 container.appendChild(div);
             });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         function loadSavedPlan(index) {
@@ -1149,10 +1718,9 @@
 
         // Export PDF
         async function exportPDF() {
+            showLoading('Generating PDF...');
             updatePreview();
             const preview = document.getElementById('preview-content');
-            
-            showToast('Generating PDF...', 'success');
             
             try {
                 const canvas = await html2canvas(preview, {
@@ -1168,11 +1736,174 @@
                 pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
                 pdf.save(`diet-plan-${document.getElementById('patientName').value || 'plan'}.pdf`);
                 
+                hideLoading();
                 showToast('PDF exported successfully!', 'success');
             } catch (error) {
+                hideLoading();
                 showToast('Error generating PDF', 'error');
                 console.error(error);
             }
+        }
+
+        // Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            document.getElementById('dark-mode-icon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        function loadDarkMode() {
+            const isDark = localStorage.getItem('darkMode') === 'true';
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('dark-mode-icon').textContent = '☀️';
+            }
+        }
+
+        // Loading States
+        function showLoading(message = 'Processing...') {
+            const overlay = document.getElementById('loadingOverlay');
+            const messageEl = document.getElementById('loadingMessage');
+            messageEl.textContent = message;
+            overlay.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        // Form Validation
+        function setupFormValidation() {
+            const form = document.getElementById('dietForm');
+            const patientName = document.getElementById('patientName');
+            const patientEmail = document.getElementById('patientEmail');
+            const startDate = document.getElementById('startDate');
+
+            patientName.addEventListener('blur', () => validateRequired(patientName));
+            patientEmail.addEventListener('blur', () => validateEmail(patientEmail));
+            startDate.addEventListener('blur', () => validateRequired(startDate));
+        }
+
+        function validateRequired(input) {
+            const errorEl = document.getElementById(`${input.id}-error`);
+            if (!input.value.trim()) {
+                input.classList.add('input-error');
+                input.classList.remove('input-success');
+                if (errorEl) errorEl.textContent = 'This field is required';
+                return false;
+            } else {
+                input.classList.remove('input-error');
+                input.classList.add('input-success');
+                if (errorEl) errorEl.textContent = '';
+                return true;
+            }
+        }
+
+        function validateEmail(input) {
+            if (!input.value) return true; // Optional field
+            const errorEl = document.getElementById(`${input.id}-error`);
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(input.value)) {
+                input.classList.add('input-error');
+                input.classList.remove('input-success');
+                if (errorEl) errorEl.textContent = 'Please enter a valid email';
+                return false;
+            } else {
+                input.classList.remove('input-error');
+                input.classList.add('input-success');
+                if (errorEl) errorEl.textContent = '';
+                return true;
+            }
+        }
+
+        function validateForm() {
+            const patientName = document.getElementById('patientName');
+            const startDate = document.getElementById('startDate');
+            const patientEmail = document.getElementById('patientEmail');
+
+            const isNameValid = validateRequired(patientName);
+            const isDateValid = validateRequired(startDate);
+            const isEmailValid = validateEmail(patientEmail);
+
+            return isNameValid && isDateValid && isEmailValid;
+        }
+
+        // Progress Tracking
+        function setupProgressTracking() {
+            const steps = document.querySelectorAll('.step');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const stepNum = entry.target.dataset.stepNum;
+                        updateProgressSteps(stepNum);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            steps.forEach(step => observer.observe(step));
+        }
+
+        function updateProgressSteps(activeStep = null) {
+            if (!activeStep) return;
+            
+            const progressSteps = document.querySelectorAll('.progress-step');
+            progressSteps.forEach((step, index) => {
+                const stepNum = index + 1;
+                if (stepNum < activeStep) {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                } else if (stepNum == activeStep) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        // Keyboard Navigation
+        function setupKeyboardNavigation() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach((tab, index) => {
+                tab.addEventListener('keydown', (e) => {
+                    let newIndex = index;
+                    if (e.key === 'ArrowRight') {
+                        newIndex = (index + 1) % tabs.length;
+                    } else if (e.key === 'ArrowLeft') {
+                        newIndex = (index - 1 + tabs.length) % tabs.length;
+                    } else {
+                        return;
+                    }
+                    e.preventDefault();
+                    tabs[newIndex].click();
+                    tabs[newIndex].focus();
+                });
+            });
+        }
+
+        // Export to JSON
+        function exportPlanAsJSON(index = null) {
+            let data;
+            if (index !== null) {
+                const savedPlans = JSON.parse(localStorage.getItem('dietPlans') || '[]');
+                data = savedPlans[index].data;
+            } else {
+                data = collectFormData();
+            }
+
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `diet-plan-${data.patientName || 'export'}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('JSON exported successfully!', 'success');
         }
 
         // Toast Notifications
@@ -1383,11 +2114,12 @@
 
         function importPlan() {
             try {
-                const json = document.getElementById('importJSON').value;
+                const json = document.getElementById('importJSONText').value;
                 const data = JSON.parse(json);
                 populateFormData(data);
                 closeModal('importModal');
                 showToast('Plan imported successfully!', 'success');
+                document.querySelector('.tab[data-tab="create"]').click();
             } catch (error) {
                 showToast('Invalid JSON format', 'error');
             }
@@ -1397,32 +2129,47 @@
         document.getElementById('dietForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const events = generateICSEvents();
-            const { error, value } = ics.createEvents(events);
-
-            if (error) {
-                showToast('Error generating calendar file', 'error');
-                console.error(error);
+            if (!validateForm()) {
+                showToast('Please fill in all required fields correctly', 'error');
                 return;
             }
 
-            // Store the generated ICS content for validation
-            lastGeneratedICS = value;
-            
-            // Enable the validate button
-            document.getElementById('validateICS').disabled = false;
+            showLoading('Generating calendar file...');
 
-            const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `diet-plan-${document.getElementById('startDate').value}.ics`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            try {
+                const events = generateICSEvents();
+                const { error, value } = ics.createEvents(events);
 
-            showToast('Calendar file generated successfully! You can now validate it.', 'success');
+                if (error) {
+                    hideLoading();
+                    showToast('Error generating calendar file', 'error');
+                    console.error(error);
+                    return;
+                }
+
+                // Store the generated ICS content for validation
+                lastGeneratedICS = value;
+                
+                // Enable the validate button
+                document.getElementById('validateICS').disabled = false;
+
+                const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `diet-plan-${document.getElementById('startDate').value}.ics`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                hideLoading();
+                showToast('Calendar file generated successfully! You can now validate it.', 'success');
+            } catch (error) {
+                hideLoading();
+                showToast('Error generating calendar file', 'error');
+                console.error(error);
+            }
         });
 
         document.getElementById('add-meal').addEventListener('click', () => {
@@ -1435,8 +2182,16 @@
         document.getElementById('savePlan').addEventListener('click', savePlan);
         document.getElementById('exportPDF').addEventListener('click', exportPDF);
         
+        document.getElementById('exportJSON').addEventListener('click', () => {
+            exportPlanAsJSON();
+        });
+
+        document.getElementById('importJSON').addEventListener('click', () => {
+            document.getElementById('importModal').style.display = 'block';
+        });
+        
         document.getElementById('resetForm').addEventListener('click', () => {
-            if (confirm('Reset all fields?')) {
+            if (confirm('Reset all fields? This cannot be undone.')) {
                 document.getElementById('dietForm').reset();
                 document.getElementById('meals-container').innerHTML = '';
                 mealCount = 0;
