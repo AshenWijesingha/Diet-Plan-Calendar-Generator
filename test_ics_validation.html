@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICS Validation Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .success {
+            background: #d1fae5;
+            color: #059669;
+        }
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        h2 {
+            color: #333;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>ICS File Validation Test</h1>
+    <p>This page demonstrates the ICS validation functionality that has been added to the Diet Plan Calendar Generator.</p>
+    
+    <div id="test-results"></div>
+
+    <script>
+        // Copy of the validation function from the main app
+        function validateICSFile(icsContent) {
+            const validationResults = {
+                isValid: true,
+                errors: [],
+                warnings: [],
+                successes: []
+            };
+
+            // Check 1: Basic structure
+            if (!icsContent || icsContent.trim().length === 0) {
+                validationResults.isValid = false;
+                validationResults.errors.push('ICS content is empty');
+                return validationResults;
+            }
+
+            // Check 2: Required headers
+            if (!icsContent.includes('BEGIN:VCALENDAR')) {
+                validationResults.isValid = false;
+                validationResults.errors.push('Missing required VCALENDAR header');
+            } else {
+                validationResults.successes.push('VCALENDAR header present');
+            }
+
+            if (!icsContent.includes('END:VCALENDAR')) {
+                validationResults.isValid = false;
+                validationResults.errors.push('Missing required VCALENDAR closing tag');
+            } else {
+                validationResults.successes.push('VCALENDAR properly closed');
+            }
+
+            // Check 3: Version
+            if (!icsContent.includes('VERSION:2.0')) {
+                validationResults.warnings.push('ICS version not specified or not 2.0');
+            } else {
+                validationResults.successes.push('Valid ICS version 2.0');
+            }
+
+            // Check 4: Events
+            const eventMatches = icsContent.match(/BEGIN:VEVENT/g);
+            const eventCount = eventMatches ? eventMatches.length : 0;
+            
+            if (eventCount === 0) {
+                validationResults.isValid = false;
+                validationResults.errors.push('No events found in calendar');
+            } else {
+                validationResults.successes.push(`Found ${eventCount} event(s) in calendar`);
+            }
+
+            // Check 5: Event structure
+            const endEventMatches = icsContent.match(/END:VEVENT/g);
+            const endEventCount = endEventMatches ? endEventMatches.length : 0;
+            
+            if (eventCount !== endEventCount) {
+                validationResults.isValid = false;
+                validationResults.errors.push(`Mismatched VEVENT tags: ${eventCount} BEGIN but ${endEventCount} END`);
+            } else {
+                validationResults.successes.push('All events properly closed');
+            }
+
+            // Check 6: Required event fields
+            const requiredFields = ['DTSTART', 'SUMMARY', 'UID'];
+            const events = icsContent.split('BEGIN:VEVENT').slice(1);
+            
+            events.forEach((event, index) => {
+                requiredFields.forEach(field => {
+                    if (!event.includes(field)) {
+                        validationResults.warnings.push(`Event ${index + 1} missing recommended field: ${field}`);
+                    }
+                });
+            });
+
+            // Check 7: Date format validation
+            const datePattern = /DTSTART.*?:(\d{8}T\d{6})/g;
+            const dates = [...icsContent.matchAll(datePattern)];
+            let validDates = 0;
+            
+            dates.forEach(match => {
+                const dateStr = match[1];
+                if (/^\d{8}T\d{6}$/.test(dateStr)) {
+                    validDates++;
+                }
+            });
+            
+            if (dates.length > 0) {
+                if (validDates === dates.length) {
+                    validationResults.successes.push(`All ${validDates} date(s) have valid format`);
+                } else {
+                    validationResults.warnings.push(`${dates.length - validDates} date(s) may have invalid format`);
+                }
+            }
+
+            // Check 8: PRODID (recommended)
+            if (!icsContent.includes('PRODID:')) {
+                validationResults.warnings.push('Missing PRODID (recommended for calendar identification)');
+            } else {
+                validationResults.successes.push('PRODID present');
+            }
+
+            // Check 9: Alarm structure
+            const alarmMatches = icsContent.match(/BEGIN:VALARM/g);
+            const alarmCount = alarmMatches ? alarmMatches.length : 0;
+            const alarmEndMatches = icsContent.match(/END:VALARM/g);
+            const alarmEndCount = alarmEndMatches ? alarmEndMatches.length : 0;
+            
+            if (alarmCount !== alarmEndCount) {
+                validationResults.errors.push(`Mismatched VALARM tags: ${alarmCount} BEGIN but ${alarmEndCount} END`);
+                validationResults.isValid = false;
+            } else if (alarmCount > 0) {
+                validationResults.successes.push(`${alarmCount} alarm(s) properly configured`);
+            }
+
+            return validationResults;
+        }
+
+        // Test cases
+        const tests = [
+            {
+                name: "Valid ICS File",
+                ics: `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Diet Plan Calendar//EN
+BEGIN:VEVENT
+UID:123@dietplan
+DTSTART:20251119T073000
+DTEND:20251119T080000
+SUMMARY:Breakfast – John Doe
+DESCRIPTION:Morning meal
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:124@dietplan
+DTSTART:20251119T130000
+DTEND:20251119T133000
+SUMMARY:Lunch – John Doe
+DESCRIPTION:Afternoon meal
+END:VEVENT
+END:VCALENDAR`
+            },
+            {
+                name: "Invalid ICS - Missing VCALENDAR",
+                ics: `BEGIN:VEVENT
+UID:123@dietplan
+DTSTART:20251119T073000
+SUMMARY:Breakfast
+END:VEVENT`
+            },
+            {
+                name: "Invalid ICS - Mismatched VEVENT tags",
+                ics: `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:123@dietplan
+DTSTART:20251119T073000
+SUMMARY:Breakfast
+BEGIN:VEVENT
+UID:124@dietplan
+DTSTART:20251119T130000
+SUMMARY:Lunch
+END:VEVENT
+END:VCALENDAR`
+            },
+            {
+                name: "ICS with Warnings - Missing PRODID",
+                ics: `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:123@dietplan
+DTSTART:20251119T073000
+SUMMARY:Breakfast – John Doe
+END:VEVENT
+END:VCALENDAR`
+            }
+        ];
+
+        // Run tests
+        const resultsContainer = document.getElementById('test-results');
+        
+        tests.forEach((test, index) => {
+            const result = validateICSFile(test.ics);
+            
+            let html = `<div class="test-result">`;
+            html += `<h2>Test ${index + 1}: ${test.name}</h2>`;
+            html += `<p><strong>Overall Status:</strong> ${result.isValid ? '✅ Valid' : '❌ Invalid'}</p>`;
+            
+            if (result.errors.length > 0) {
+                html += `<h3>Errors (${result.errors.length}):</h3><ul>`;
+                result.errors.forEach(err => html += `<li class="error">❌ ${err}</li>`);
+                html += `</ul>`;
+            }
+            
+            if (result.warnings.length > 0) {
+                html += `<h3>Warnings (${result.warnings.length}):</h3><ul>`;
+                result.warnings.forEach(warn => html += `<li class="warning">⚠️ ${warn}</li>`);
+                html += `</ul>`;
+            }
+            
+            if (result.successes.length > 0) {
+                html += `<h3>Passed Checks (${result.successes.length}):</h3><ul>`;
+                result.successes.forEach(succ => html += `<li class="success">✅ ${succ}</li>`);
+                html += `</ul>`;
+            }
+            
+            html += `<details><summary>View ICS Content</summary><pre>${test.ics}</pre></details>`;
+            html += `</div>`;
+            
+            resultsContainer.innerHTML += html;
+        });
+
+        console.log('All ICS validation tests completed successfully!');
+    </script>
+</body>
+</html>
