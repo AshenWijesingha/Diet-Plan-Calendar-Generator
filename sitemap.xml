@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    
+    <!-- Main Page -->
+    <url>
+        <loc>https://ashenwije.github.io/Diet-Plan-Calendar-Generator/</loc>
+        <lastmod>2025-11-19</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Create Plan Section -->
+    <url>
+        <loc>https://ashenwije.github.io/Diet-Plan-Calendar-Generator/#create</loc>
+        <lastmod>2025-11-19</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Templates Section -->
+    <url>
+        <loc>https://ashenwije.github.io/Diet-Plan-Calendar-Generator/#templates</loc>
+        <lastmod>2025-11-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Saved Plans Section -->
+    <url>
+        <loc>https://ashenwije.github.io/Diet-Plan-Calendar-Generator/#saved</loc>
+        <lastmod>2025-11-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Preview Section -->
+    <url>
+        <loc>https://ashenwije.github.io/Diet-Plan-Calendar-Generator/#preview</loc>
+        <lastmod>2025-11-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Test Page -->
+    <url>
+        <loc>https://ashenwije.github.io/Diet-Plan-Calendar-Generator/test_ics_validation.html</loc>
+        <lastmod>2025-11-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+</urlset>
