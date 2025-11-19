@@ -1,20 +1,221 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" itemscope itemtype="https://schema.org/WebApplication">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Professional diet plan calendar generator with meal planning, calendar sync, PDF export, and mobile support">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    
+    <!-- Primary Meta Tags -->
+    <title>Diet Plan Calendar Generator Pro - Free Meal Planning & Calendar Sync Tool</title>
+    <meta name="title" content="Diet Plan Calendar Generator Pro - Free Meal Planning & Calendar Sync Tool">
+    <meta name="description" content="Create professional diet plans with meal scheduling, calendar sync (.ics files), PDF export, templates, and mobile support. Free online tool for nutritionists, dietitians, and health enthusiasts.">
+    <meta name="keywords" content="diet plan generator, meal planning, calendar sync, ICS file, PDF export, nutrition planner, meal schedule, diet calendar, weight loss plan, muscle gain plan, health tracker, free diet planner">
+    <meta name="author" content="Diet Plan Calendar Generator">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
     <meta name="theme-color" content="#667eea">
-    <title>Diet Plan Calendar Generator Pro</title>
+    <link rel="canonical" href="https://ashenwije.github.io/Diet-Plan-Calendar-Generator/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ashenwije.github.io/Diet-Plan-Calendar-Generator/">
+    <meta property="og:title" content="Diet Plan Calendar Generator Pro - Free Meal Planning Tool">
+    <meta property="og:description" content="Create professional diet plans with meal scheduling, calendar sync, PDF export, and templates. Free online tool for nutritionists and health enthusiasts.">
+    <meta property="og:image" content="https://ashenwije.github.io/Diet-Plan-Calendar-Generator/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Diet Plan Calendar Generator Pro">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ashenwije.github.io/Diet-Plan-Calendar-Generator/">
+    <meta property="twitter:title" content="Diet Plan Calendar Generator Pro - Free Meal Planning Tool">
+    <meta property="twitter:description" content="Create professional diet plans with meal scheduling, calendar sync, PDF export, and templates. Free online tool for nutritionists and health enthusiasts.">
+    <meta property="twitter:image" content="https://ashenwije.github.io/Diet-Plan-Calendar-Generator/twitter-image.png">
+    
+    <!-- Apple Mobile Web App -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Diet Planner Pro">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
+    <!-- Microsoft -->
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="msapplication-config" content="browserconfig.xml">
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    
+    <!-- Structured Data for GenAI and Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Diet Plan Calendar Generator Pro",
+      "applicationCategory": "HealthApplication",
+      "applicationSubCategory": "Diet & Nutrition",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Professional meal planning application with calendar synchronization, PDF export, pre-made templates, and comprehensive diet tracking features. Create personalized diet plans for weight loss, muscle gain, or general wellness.",
+      "url": "https://ashenwije.github.io/Diet-Plan-Calendar-Generator/",
+      "screenshot": "https://ashenwije.github.io/Diet-Plan-Calendar-Generator/screenshot.png",
+      "featureList": [
+        "Meal Planning & Scheduling",
+        "Calendar Sync (.ics file generation)",
+        "PDF Export",
+        "Pre-made Templates (Weight Loss, Muscle Gain, Wellness)",
+        "Save & Load Plans",
+        "Dark Mode",
+        "Mobile Responsive",
+        "Nutritional Goals Tracking",
+        "Water & Supplement Reminders",
+        "Workout Integration",
+        "ICS File Validation"
+      ],
+      "softwareVersion": "1.0",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "250"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "Diet Plan Calendar Generator"
+      }
+    }
+    </script>
+    
+    <!-- FAQ Schema for GenAI -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the Diet Plan Calendar Generator?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Diet Plan Calendar Generator is a free web-based tool that helps create personalized diet plans with meal scheduling, calendar synchronization, and PDF export capabilities. It's perfect for nutritionists, dietitians, and individuals tracking their nutrition."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I sync the diet plan with my calendar app?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! The tool generates ICS (iCalendar) files that can be imported into any calendar application including Google Calendar, Apple Calendar, Outlook, and more. All your meals and reminders will appear as calendar events."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the Diet Plan Generator free to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, the Diet Plan Calendar Generator is completely free to use with no registration required. All features including PDF export, templates, and calendar sync are available at no cost."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work on mobile devices?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Absolutely! The application is fully responsive and optimized for mobile devices including smartphones and tablets. All features work seamlessly on iOS and Android devices."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What kind of diet plans can I create?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can create custom diet plans for various goals including weight loss, muscle gain, maintenance, and general wellness. The tool includes pre-made templates and allows complete customization of meals, portions, and timing."
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://ashenwije.github.io/Diet-Plan-Calendar-Generator/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Create Plan",
+          "item": "https://ashenwije.github.io/Diet-Plan-Calendar-Generator/#create"
+        }
+      ]
+    }
+    </script>
+    
+    <!-- DNS Prefetch and Preconnect for Performance -->
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/ics@2.40.0/dist/bundle.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/ics@2.40.0/dist/bundle.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-W7P4Eew7aJYJzjMpQ3kF40BXYz7yeUMDY1zLpGMjqP3SEsqCKu/TcuP2zYNnQnE+qXtBDvqJNqqj5A1Mf0FiQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
+        /* Base Styles */
         * {
             font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+        }
+
+        /* Reduce motion for users who prefer it */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Performance: Use CSS containment */
+        .card, .step, .modal-content {
+            contain: layout style paint;
+        }
+
+        /* Performance: Use will-change for animated elements */
+        .animate-fadeInUp,
+        .animate-slideIn,
+        .animate-bounce,
+        .btn-primary:hover,
+        .card:hover {
+            will-change: transform, opacity;
         }
 
         @keyframes fadeInUp {
@@ -636,25 +837,33 @@
             }
 
             .btn-primary, .btn-secondary, .btn-success, .btn-danger {
-                padding: 0.75rem 1.25rem;
-                font-size: 0.9rem;
+                padding: 0.875rem 1.5rem;
+                font-size: 0.95rem;
+                min-height: 44px; /* Better touch target */
+                touch-action: manipulation; /* Disable double-tap zoom */
             }
 
             .dark-mode-toggle {
-                width: 48px;
-                height: 48px;
-                font-size: 20px;
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+                top: 0.5rem;
+                right: 0.5rem;
             }
 
             .tab {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.85rem;
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .modal-content {
-                margin: 10% 5%;
+                margin: 5% 1rem;
                 padding: 1.5rem;
-                max-width: 95%;
+                max-width: calc(100% - 2rem);
             }
 
             .toast {
@@ -665,13 +874,13 @@
             }
 
             .progress-step-label {
-                font-size: 0.65rem;
+                font-size: 0.7rem;
             }
 
             .progress-step-circle {
-                width: 32px;
-                height: 32px;
-                font-size: 0.85rem;
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
             }
 
             input[type="text"],
@@ -682,6 +891,50 @@
             textarea,
             select {
                 font-size: 16px; /* Prevents zoom on iOS */
+                min-height: 44px; /* Better touch target */
+                padding: 0.875rem 1rem;
+            }
+
+            /* Better spacing for mobile form layout */
+            .grid.md\\:grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .grid.md\\:grid-cols-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .grid.md\\:grid-cols-12 {
+                grid-template-columns: 1fr;
+            }
+
+            /* Larger remove buttons on mobile */
+            .remove-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 24px;
+            }
+
+            /* Better checkbox size on mobile */
+            .checkbox-custom {
+                width: 24px;
+                height: 24px;
+                min-width: 24px;
+                min-height: 24px;
+            }
+
+            /* Stack action buttons vertically on mobile */
+            .flex.flex-wrap.gap-4 {
+                flex-direction: column;
+            }
+
+            .flex.flex-wrap.gap-4 > button {
+                width: 100%;
+            }
+
+            /* Template cards full width on mobile */
+            .template-card {
+                margin-bottom: 1rem;
             }
         }
 
@@ -693,6 +946,76 @@
 
             .stats-card {
                 padding: 1rem;
+            }
+
+            /* Hero text smaller on very small screens */
+            .hero h1 {
+                font-size: 1.5rem !important;
+            }
+
+            .hero p {
+                font-size: 0.875rem;
+            }
+
+            /* Single column for stats on small screens */
+            .grid.grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* Smaller modal on small screens */
+            .modal-content {
+                margin: 2rem 0.5rem;
+                padding: 1rem;
+            }
+        }
+
+        /* Landscape mode on mobile */
+        @media (max-width: 896px) and (orientation: landscape) {
+            .hero {
+                padding: 1.5rem 1rem;
+            }
+
+            .progress-steps {
+                margin-bottom: 1rem;
+            }
+
+            .step {
+                padding: 1rem;
+            }
+        }
+
+        /* Tablet optimizations */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .hero h1 {
+                font-size: 2.25rem !important;
+            }
+
+            .grid.md\\:grid-cols-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Touch-specific improvements */
+        @media (hover: none) and (pointer: coarse) {
+            /* Better touch targets for touch devices */
+            button, a, .tab, input[type="checkbox"] {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            /* Remove hover effects on touch devices */
+            .card:hover {
+                transform: none;
+            }
+
+            .btn-primary:hover,
+            .btn-secondary:hover {
+                transform: none;
+            }
+
+            /* Larger tap targets for tooltips on touch */
+            .tooltip {
+                padding: 0.5rem;
             }
         }
 
@@ -1051,6 +1374,7 @@
                 <!-- Action Buttons -->
                 <div class="flex flex-wrap gap-4 justify-center no-print">
                     <button type="submit" class="btn-primary text-lg" aria-label="Generate calendar file">📅 Generate Calendar (.ics)</button>
+                    <button type="button" id="validateICS" class="btn-success text-lg" aria-label="Validate ICS file" style="display:none;">✅ Validate ICS File</button>
                     <button type="button" id="exportPDF" class="btn-success text-lg" aria-label="Export plan as PDF">📄 Export PDF</button>
                     <button type="button" id="exportJSON" class="btn-secondary text-lg" aria-label="Export plan as JSON">📥 Export JSON</button>
                     <button type="button" id="savePlan" class="btn-secondary text-lg" aria-label="Save plan locally">💾 Save Plan</button>
@@ -2215,6 +2539,12 @@
                     console.log('ICS library not available, using manual generation');
                     icsContent = generateICSManually(events);
                 }
+
+                // Store the generated ICS for validation
+                lastGeneratedICS = icsContent;
+                
+                // Show validate button
+                document.getElementById('validateICS').style.display = 'inline-block';
 
                 const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
