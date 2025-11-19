@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#667eea">
     <title>Diet Plan Calendar Generator Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ics@3.7.6/dist/bundle.min.js"></script>
+    <script src="https://unpkg.com/ics@2.40.0/dist/bundle.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -1180,7 +1180,7 @@
             const div = document.createElement('div');
             div.className = 'card meal-row';
             div.innerHTML = `
-                <div class="grid md:grid-cols-12 gap-3 items-start">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Time</label>
                         <input type="time" value="${mealData.time}" data-index="${index}" class="meal-time text-gray-800">
@@ -1191,14 +1191,14 @@
                     </div>
                     <div class="md:col-span-4">
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Description / Macros</label>
-                        <textarea placeholder="Details, calories, macros..." data-index="${index}" class="meal-desc text-gray-800" rows="1">${mealData.description}</textarea>
+                        <input type="text" placeholder="Details, calories, macros..." data-index="${index}" class="meal-desc text-gray-800">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Calories</label>
                         <input type="number" placeholder="Cal" data-index="${index}" class="meal-calories text-gray-800">
                     </div>
-                    <div class="md:col-span-1 flex items-end justify-center md:justify-end h-full pb-1">
-                        <button type="button" class="remove-btn" onclick="removeMeal(this)">×</button>
+                    <div class="md:col-span-1 flex items-end justify-center md:justify-end">
+                        <button type="button" class="remove-btn" onclick="removeMeal(this)" aria-label="Remove meal">×</button>
                     </div>
                 </div>
             `;
@@ -1824,6 +1824,67 @@
             });
         }
 
+        // Fallback ICS Generator (in case library fails to load)
+        function generateICSManually(events) {
+            const formatDate = (dateArray) => {
+                const [year, month, day, hours, minutes] = dateArray;
+                const pad = (n) => String(n).padStart(2, '0');
+                return `${year}${pad(month)}${pad(day)}T${pad(hours)}${pad(minutes)}00`;
+            };
+
+            let icsContent = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Diet Plan Calendar Generator//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n';
+
+            events.forEach(event => {
+                const startDate = formatDate(event.start);
+                const uid = `${startDate}-${Math.random().toString(36).substr(2, 9)}@dietplan.com`;
+                
+                icsContent += 'BEGIN:VEVENT\r\n';
+                icsContent += `UID:${uid}\r\n`;
+                icsContent += `DTSTAMP:${formatDate([...event.start])}\r\n`;
+                icsContent += `DTSTART:${startDate}\r\n`;
+                
+                if (event.duration) {
+                    const endDate = new Date(event.start[0], event.start[1] - 1, event.start[2], event.start[3], event.start[4]);
+                    if (event.duration.minutes) endDate.setMinutes(endDate.getMinutes() + event.duration.minutes);
+                    if (event.duration.hours) endDate.setHours(endDate.getHours() + event.duration.hours);
+                    const endArray = [endDate.getFullYear(), endDate.getMonth() + 1, endDate.getDate(), endDate.getHours(), endDate.getMinutes()];
+                    icsContent += `DTEND:${formatDate(endArray)}\r\n`;
+                }
+                
+                icsContent += `SUMMARY:${event.title || 'Event'}\r\n`;
+                
+                if (event.description) {
+                    icsContent += `DESCRIPTION:${event.description.replace(/\n/g, '\\n')}\r\n`;
+                }
+                
+                if (event.categories) {
+                    icsContent += `CATEGORIES:${event.categories.join(',')}\r\n`;
+                }
+                
+                icsContent += 'STATUS:CONFIRMED\r\n';
+                icsContent += 'TRANSP:TRANSPARENT\r\n';
+                
+                if (event.alarms && event.alarms.length > 0) {
+                    event.alarms.forEach(alarm => {
+                        icsContent += 'BEGIN:VALARM\r\n';
+                        icsContent += 'ACTION:DISPLAY\r\n';
+                        icsContent += `DESCRIPTION:${alarm.description || 'Reminder'}\r\n`;
+                        if (alarm.trigger) {
+                            const sign = alarm.trigger.before ? '-' : '';
+                            const minutes = alarm.trigger.minutes || 0;
+                            icsContent += `TRIGGER:${sign}PT${minutes}M\r\n`;
+                        }
+                        icsContent += 'END:VALARM\r\n';
+                    });
+                }
+                
+                icsContent += 'END:VEVENT\r\n';
+            });
+
+            icsContent += 'END:VCALENDAR\r\n';
+            return icsContent;
+        }
+
         // Export to JSON
         function exportPlanAsJSON(index = null) {
             let data;
@@ -1891,16 +1952,25 @@
 
             try {
                 const events = generateICSEvents();
-                const { error, value } = ics.createEvents(events);
+                let icsContent;
 
-                if (error) {
-                    hideLoading();
-                    showToast('Error generating calendar file', 'error');
-                    console.error(error);
-                    return;
+                // Try to use the ICS library first
+                if (typeof ics !== 'undefined' && typeof ics.createEvents === 'function') {
+                    const { error, value } = ics.createEvents(events);
+
+                    if (error) {
+                        console.warn('ICS library error, using fallback:', error);
+                        icsContent = generateICSManually(events);
+                    } else {
+                        icsContent = value;
+                    }
+                } else {
+                    // Fallback to manual generation
+                    console.log('ICS library not available, using manual generation');
+                    icsContent = generateICSManually(events);
                 }
 
-                const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
+                const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -1914,7 +1984,7 @@
                 showToast('Calendar file generated successfully!', 'success');
             } catch (error) {
                 hideLoading();
-                showToast('Error generating calendar file', 'error');
+                showToast('Error generating calendar file: ' + error.message, 'error');
                 console.error(error);
             }
         });
